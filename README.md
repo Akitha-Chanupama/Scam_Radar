@@ -455,6 +455,9 @@ For issues, feature requests, or questions:
 - Email: support@scamradar.lk (if deployed)
 - Join our community Discord (TBD)
 
+
+## Akitha Chanupama
+
 ---
 
 **Built with ❤️ to protect Sri Lankan users from scams.**
