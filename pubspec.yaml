@@ -1,0 +1,55 @@
+name: scam_radar
+description: "Detect, report, and track scam messages and phone numbers in Sri Lanka."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Backend
+  supabase_flutter: ^2.8.0
+
+  # Navigation
+  go_router: ^14.6.2
+
+  # Map
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
+  # HTTP client
+  dio: ^5.7.0
+
+  # Notifications
+  flutter_local_notifications: ^18.0.1
+
+  # Image & OCR
+  image_picker: ^1.1.2
+  google_mlkit_text_recognition: ^0.14.0
+
+  # Local storage
+  shared_preferences: ^2.3.4
+
+  # Animations
+  flutter_animate: ^4.5.2
+
+  # Utilities
+  intl: ^0.19.0
+  url_launcher: ^6.3.1
+  timeago: ^3.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
