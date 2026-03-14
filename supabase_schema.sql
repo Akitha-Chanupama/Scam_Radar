@@ -129,7 +129,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Trigger: fires after a new auth user is created
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -159,7 +159,7 @@ BEGIN
 
   RETURN v_id;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 8. FUNCTION: Get scam statistics
 CREATE OR REPLACE FUNCTION get_scam_stats()
@@ -176,7 +176,7 @@ BEGIN
 
   RETURN result;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 9. ENABLE REALTIME on tables
 ALTER PUBLICATION supabase_realtime ADD TABLE community_reports;

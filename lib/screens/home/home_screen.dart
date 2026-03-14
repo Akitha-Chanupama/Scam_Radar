@@ -30,8 +30,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     final text = _messageController.text.trim();
+    // analyzeMessage is synchronous, state updates immediately
     ref.read(scamMessagesProvider.notifier).analyzeMessage(text);
 
+    // Read updated state after synchronous analysis
     final state = ref.read(scamMessagesProvider);
     if (state.status == AnalysisStatus.result && state.result != null) {
       context.push('/analysis', extra: {
@@ -39,6 +41,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         'scamScore': state.result!.score,
         'reasons': state.result!.reasons,
       });
+    } else if (state.status == AnalysisStatus.error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.error ?? 'Analysis failed. Please try again.'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
     }
   }
 
@@ -52,6 +61,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       builder: (_) => ScreenshotScanner(
         onTextExtracted: (text) {
           _messageController.text = text;
+          // Auto-trigger analysis after closing the sheet
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _analyzeMessage();
+          });
         },
       ),
     );

@@ -54,10 +54,11 @@ class ScamMessagesNotifier extends StateNotifier<AnalysisState> {
 
   Future<void> reportMessage() async {
     if (state.result == null || state.messageText == null) return;
-    if (_userId == null) return;
+    final userId = _userId;
+    if (userId == null) return;
 
     final message = ScamMessage(
-      userId: _userId!,
+      userId: userId,
       messageText: state.messageText!,
       scamScore: state.result!.score,
       reasons: state.result!.reasons,
@@ -70,7 +71,7 @@ class ScamMessagesNotifier extends StateNotifier<AnalysisState> {
     // Also create a community report
     await _db.insertCommunityReport(
       CommunityReport(
-        reporterId: _userId!,
+        reporterId: userId,
         reportType: 'message',
         scamMessageId: saved.id,
         description:
