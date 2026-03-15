@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../providers/scam_messages_provider.dart';
 import '../../services/database_service.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -63,9 +64,11 @@ class ProfileScreen extends ConsumerWidget {
 
             // Stats
             FutureBuilder<Map<String, dynamic>>(
-              future: DatabaseService(ref.watch(supabaseClientProvider))
-                  .getScamStats(),
+              future: ref.read(databaseServiceProvider).getScamStats(),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 if (!snapshot.hasData) {
                   return const SizedBox.shrink();
                 }
