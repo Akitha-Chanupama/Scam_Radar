@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         children: [
           AnimatedBuilder(
             animation: _pulseController,
-            builder: (_, __) => Container(
+            builder: (_, anim) => Container(
               width: 10,
               height: 10,
               decoration: BoxDecoration(
@@ -224,7 +224,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               ),
               AnimatedBuilder(
                 animation: _pulseController,
-                builder: (_, __) => Container(
+                builder: (_, anim) => Container(
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(

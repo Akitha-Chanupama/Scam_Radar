@@ -317,7 +317,7 @@ class _RadarLogo extends StatelessWidget {
       height: 90,
       child: AnimatedBuilder(
         animation: controller,
-        builder: (_, __) => CustomPaint(
+        builder: (_, anim) => CustomPaint(
           painter: _RadarPainter(controller.value),
         ),
       ),

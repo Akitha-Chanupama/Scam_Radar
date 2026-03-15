@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -242,7 +243,7 @@ class _RadarLogo extends StatelessWidget {
       height: 100,
       child: AnimatedBuilder(
         animation: controller,
-        builder: (_, __) => CustomPaint(
+        builder: (_, anim) => CustomPaint(
           painter: _RadarPainter(controller.value),
         ),
       ),

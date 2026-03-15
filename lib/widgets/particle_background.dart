@@ -48,7 +48,7 @@ class _ParticleBackgroundState extends State<ParticleBackground>
       children: [
         AnimatedBuilder(
           animation: _controller,
-          builder: (_, __) {
+          builder: (_, anim) {
             // Tick each particle
             for (final p in _particles) {
               p.update(0.003);
