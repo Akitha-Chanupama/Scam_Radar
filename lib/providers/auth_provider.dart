@@ -11,11 +11,7 @@ class AuthState {
   final User? user;
   final String? error;
 
-  const AuthState({
-    this.status = AuthStatus.loading,
-    this.user,
-    this.error,
-  });
+  const AuthState({this.status = AuthStatus.loading, this.user, this.error});
 
   AuthState copyWith({AuthStatus? status, User? user, String? error}) =>
       AuthState(
@@ -44,10 +40,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     _authService.authStateChanges.listen((authState) {
       final session = authState.session;
       if (session != null) {
-        state = AuthState(
-          status: AuthStatus.authenticated,
-          user: session.user,
-        );
+        state = AuthState(status: AuthStatus.authenticated, user: session.user);
       } else {
         state = const AuthState(status: AuthStatus.unauthenticated);
       }
@@ -61,11 +54,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }) async {
     state = state.copyWith(status: AuthStatus.loading, error: null);
     try {
-      await _authService.signUp(
-        email: email,
-        password: password,
-        name: name,
-      );
+      await _authService.signUp(email: email, password: password, name: name);
     } catch (e) {
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
@@ -75,10 +64,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     state = state.copyWith(status: AuthStatus.loading, error: null);
     try {
       await _authService.signIn(email: email, password: password);

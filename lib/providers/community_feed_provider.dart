@@ -26,13 +26,12 @@ class FeedState {
     String? filterType,
     String? error,
     bool clearFilter = false,
-  }) =>
-      FeedState(
-        reports: reports ?? this.reports,
-        isLoading: isLoading ?? this.isLoading,
-        filterType: clearFilter ? null : (filterType ?? this.filterType),
-        error: error,
-      );
+  }) => FeedState(
+    reports: reports ?? this.reports,
+    isLoading: isLoading ?? this.isLoading,
+    filterType: clearFilter ? null : (filterType ?? this.filterType),
+    error: error,
+  );
 }
 
 class CommunityFeedNotifier extends StateNotifier<FeedState> {
@@ -102,8 +101,8 @@ class CommunityFeedNotifier extends StateNotifier<FeedState> {
 
 final communityFeedProvider =
     StateNotifierProvider<CommunityFeedNotifier, FeedState>((ref) {
-  return CommunityFeedNotifier(
-    DatabaseService(ref.watch(supabaseClientProvider)),
-    ref.watch(supabaseClientProvider),
-  );
-});
+      return CommunityFeedNotifier(
+        DatabaseService(ref.watch(supabaseClientProvider)),
+        ref.watch(supabaseClientProvider),
+      );
+    });

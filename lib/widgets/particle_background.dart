@@ -66,8 +66,8 @@ class _ParticleBackgroundState extends State<ParticleBackground>
 }
 
 class _Particle {
-  double x, y;       // 0..1 normalized
-  double vx, vy;     // velocity
+  double x, y; // 0..1 normalized
+  double vx, vy; // velocity
   double radius;
   double opacity;
 
@@ -142,7 +142,9 @@ class _NetworkPainter extends CustomPainter {
       }
 
       // Draw particle dot
-      dotPaint.color = (i % 3 == 0 ? _blue : _cyan).withValues(alpha: p.opacity * 0.7);
+      dotPaint.color = (i % 3 == 0 ? _blue : _cyan).withValues(
+        alpha: p.opacity * 0.7,
+      );
       canvas.drawCircle(Offset(px, py), p.radius, dotPaint);
     }
   }

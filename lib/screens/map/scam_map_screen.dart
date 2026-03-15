@@ -49,9 +49,8 @@ class ScamMapScreen extends ConsumerWidget {
         loading: () => const Center(
           child: CircularProgressIndicator(color: AppColors.cyan),
         ),
-        error: (e, st) => _ErrorState(
-          onRetry: () => ref.invalidate(mapScamNumbersProvider),
-        ),
+        error: (e, st) =>
+            _ErrorState(onRetry: () => ref.invalidate(mapScamNumbersProvider)),
         data: (numbers) => Stack(
           children: [
             FlutterMap(
@@ -63,8 +62,7 @@ class ScamMapScreen extends ConsumerWidget {
               ),
               children: [
                 TileLayer(
-                  urlTemplate:
-                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.scam_radar',
                 ),
                 MarkerLayer(
@@ -95,7 +93,10 @@ class ScamMapScreen extends ConsumerWidget {
   }
 
   PreferredSizeWidget _buildAppBar(
-      BuildContext context, bool isDark, WidgetRef ref) {
+    BuildContext context,
+    bool isDark,
+    WidgetRef ref,
+  ) {
     return AppBar(
       backgroundColor: isDark
           ? AppColors.bgDark.withValues(alpha: 0.95)
@@ -111,8 +112,7 @@ class ScamMapScreen extends ConsumerWidget {
       ),
       actions: [
         IconButton(
-          icon:
-              const Icon(Icons.refresh, color: AppColors.textSecondary),
+          icon: const Icon(Icons.refresh, color: AppColors.textSecondary),
           onPressed: () => ref.invalidate(mapScamNumbersProvider),
         ),
       ],
@@ -133,12 +133,11 @@ class ScamMapScreen extends ConsumerWidget {
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.75 : 0.9),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.15),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.75 : 0.9,
             ),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.cyan.withValues(alpha: 0.15)),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           child: Column(
@@ -167,23 +166,20 @@ class ScamMapScreen extends ConsumerWidget {
     ).animate().fadeIn(delay: 300.ms).slideX(begin: -0.1);
   }
 
-  Widget _buildCountBadge(
-      BuildContext context, int count, bool isDark) {
+  Widget _buildCountBadge(BuildContext context, int count, bool isDark) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.75 : 0.9),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.2),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.75 : 0.9,
             ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.cyan.withValues(alpha: 0.2)),
           ),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -225,7 +221,9 @@ class ScamMapScreen extends ConsumerWidget {
           Text(
             label,
             style: const TextStyle(
-                color: AppColors.textSecondary, fontSize: 12),
+              color: AppColors.textSecondary,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
@@ -275,8 +273,7 @@ class ScamMapScreen extends ConsumerWidget {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (_) => ClipRRect(
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: Container(
@@ -284,11 +281,10 @@ class ScamMapScreen extends ConsumerWidget {
               color: isDark
                   ? AppColors.cardDark.withValues(alpha: 0.92)
                   : Colors.white.withValues(alpha: 0.95),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(24)),
-              border: Border.all(
-                color: AppColors.cyan.withValues(alpha: 0.15),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(24),
               ),
+              border: Border.all(color: AppColors.cyan.withValues(alpha: 0.15)),
             ),
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
             child: Column(
@@ -329,9 +325,7 @@ class ScamMapScreen extends ConsumerWidget {
                         children: [
                           Text(
                             sn.phoneNumber,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -348,14 +342,18 @@ class ScamMapScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: 20),
-                _detailRow(context, Icons.report_outlined,
-                    '${sn.reportsCount} reports'),
+                _detailRow(
+                  context,
+                  Icons.report_outlined,
+                  '${sn.reportsCount} reports',
+                ),
                 if (sn.region != null)
                   _detailRow(context, Icons.location_on_outlined, sn.region!),
                 _detailRow(
-                    context,
-                    Icons.calendar_today_outlined,
-                    'Reported on ${sn.createdAt.toLocal().toString().substring(0, 10)}'),
+                  context,
+                  Icons.calendar_today_outlined,
+                  'Reported on ${sn.createdAt.toLocal().toString().substring(0, 10)}',
+                ),
               ],
             ),
           ),
@@ -374,10 +372,9 @@ class ScamMapScreen extends ConsumerWidget {
           Expanded(
             child: Text(
               text,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
           ),
         ],
@@ -399,13 +396,12 @@ class _ErrorState extends StatelessWidget {
         children: [
           const Icon(Icons.error_outline, size: 48, color: AppColors.errorRed),
           const SizedBox(height: 12),
-          const Text('Failed to load map data',
-              style: TextStyle(color: AppColors.errorRed)),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: const Text('Retry'),
+          const Text(
+            'Failed to load map data',
+            style: TextStyle(color: AppColors.errorRed),
           ),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );

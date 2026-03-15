@@ -15,8 +15,11 @@ class DatabaseService {
   // ── Profiles ──
 
   Future<Profile?> getProfile(String userId) async {
-    final data =
-        await _client.from('profiles').select().eq('id', userId).maybeSingle();
+    final data = await _client
+        .from('profiles')
+        .select()
+        .eq('id', userId)
+        .maybeSingle();
     return data != null ? Profile.fromJson(data) : null;
   }
 
@@ -68,14 +71,17 @@ class DatabaseService {
     double? latitude,
     double? longitude,
   }) async {
-    final result = await _client.rpc('report_scam_number', params: {
-      'p_phone_number': phoneNumber,
-      'p_scam_type': scamType,
-      'p_reported_by': _userId,
-      'p_region': region,
-      'p_latitude': latitude,
-      'p_longitude': longitude,
-    });
+    final result = await _client.rpc(
+      'report_scam_number',
+      params: {
+        'p_phone_number': phoneNumber,
+        'p_scam_type': scamType,
+        'p_reported_by': _userId,
+        'p_region': region,
+        'p_latitude': latitude,
+        'p_longitude': longitude,
+      },
+    );
     return result as String;
   }
 
@@ -108,8 +114,7 @@ class DatabaseService {
 
   // ── Community Reports ──
 
-  Future<CommunityReport> insertCommunityReport(
-      CommunityReport report) async {
+  Future<CommunityReport> insertCommunityReport(CommunityReport report) async {
     final data = await _client
         .from('community_reports')
         .insert(report.toJson())
@@ -133,8 +138,7 @@ class DatabaseService {
       query = query.eq('report_type', filterType);
     }
 
-    final data =
-        await query.order('created_at', ascending: false).limit(limit);
+    final data = await query.order('created_at', ascending: false).limit(limit);
     return data.map((e) => CommunityReport.fromJson(e)).toList();
   }
 

@@ -48,11 +48,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
     ref.read(scamMessagesProvider.notifier).analyzeMessage(text);
     final state = ref.read(scamMessagesProvider);
     if (state.status == AnalysisStatus.result && state.result != null) {
-      context.push('/analysis', extra: {
-        'messageText': text,
-        'scamScore': state.result!.score,
-        'reasons': state.result!.reasons,
-      });
+      context.push(
+        '/analysis',
+        extra: {
+          'messageText': text,
+          'scamScore': state.result!.score,
+          'reasons': state.result!.reasons,
+        },
+      );
     } else if (state.status == AnalysisStatus.error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -117,7 +120,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   PreferredSizeWidget _buildAppBar(
-      BuildContext context, bool isDark, ThemeMode themeMode) {
+    BuildContext context,
+    bool isDark,
+    ThemeMode themeMode,
+  ) {
     return AppBar(
       backgroundColor: isDark
           ? AppColors.bgDark.withValues(alpha: 0.95)
@@ -137,7 +143,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.cyan.withValues(
-                        alpha: 0.4 + 0.3 * _pulseController.value),
+                      alpha: 0.4 + 0.3 * _pulseController.value,
+                    ),
                     blurRadius: 6 + 4 * _pulseController.value,
                     spreadRadius: 1,
                   ),
@@ -208,16 +215,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     Text(
                       'Stay Protected',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: AppColors.cyan,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        color: AppColors.cyan,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Detect and report scams in Sri Lanka',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -233,7 +240,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.cyan.withValues(
-                            alpha: 0.15 + 0.1 * _pulseController.value),
+                          alpha: 0.15 + 0.1 * _pulseController.value,
+                        ),
                         blurRadius: 16 + 8 * _pulseController.value,
                         spreadRadius: 0,
                       ),
@@ -256,8 +264,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.55 : 0.85),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.55 : 0.85,
+            ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: AppColors.cyan.withValues(alpha: 0.15),
@@ -272,14 +281,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.analytics_outlined,
-                        color: AppColors.cyan, size: 20),
+                    const Icon(
+                      Icons.analytics_outlined,
+                      color: AppColors.cyan,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Analyze Message',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -287,8 +299,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                 Text(
                   'Paste a suspicious message to check for scam indicators',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -302,8 +314,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   ),
                   decoration: InputDecoration(
                     hintText: 'Paste a suspicious message here...',
-                    hintStyle:
-                        const TextStyle(color: AppColors.textSecondary),
+                    hintStyle: const TextStyle(color: AppColors.textSecondary),
                     alignLabelWithHint: true,
                   ),
                 ),
@@ -321,7 +332,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.cyan,
                     side: BorderSide(
-                        color: AppColors.cyan.withValues(alpha: 0.4)),
+                      color: AppColors.cyan.withValues(alpha: 0.4),
+                    ),
                   ),
                 ),
               ],
@@ -369,7 +381,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   }
 
   Widget _buildRecentReports(
-      BuildContext context, dynamic feedState, bool isDark) {
+    BuildContext context,
+    dynamic feedState,
+    bool isDark,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -377,9 +392,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
           children: [
             Text(
               'Recent Scam Reports',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const Spacer(),
             TextButton(
@@ -465,61 +480,65 @@ class _QuickActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      decoration: BoxDecoration(
-        color: (isDark ? AppColors.cardDark : Colors.white)
-            .withValues(alpha: isDark ? 0.6 : 0.9),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.12),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 46,
-                height: 46,
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.withValues(alpha: 0.2),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-                child: Icon(icon, color: color, size: 22),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+          decoration: BoxDecoration(
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.6 : 0.9,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: color.withValues(alpha: 0.25), width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: color.withValues(alpha: 0.12),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-        ),
-      ),
-    )
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withValues(alpha: 0.2),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+                    child: Icon(icon, color: color, size: 22),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    label,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
         .animate()
         .fadeIn(
-            delay: Duration(milliseconds: delay), duration: 350.ms)
+          delay: Duration(milliseconds: delay),
+          duration: 350.ms,
+        )
         .scale(
-            begin: const Offset(0.92, 0.92),
-            delay: Duration(milliseconds: delay));
+          begin: const Offset(0.92, 0.92),
+          delay: Duration(milliseconds: delay),
+        );
   }
 }
 
@@ -536,12 +555,11 @@ class _EmptyReportsCard extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.5 : 0.8),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.1),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.5 : 0.8,
             ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.cyan.withValues(alpha: 0.1)),
           ),
           padding: const EdgeInsets.all(32),
           child: Column(
@@ -555,15 +573,15 @@ class _EmptyReportsCard extends StatelessWidget {
               Text(
                 'No scam reports yet',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  color: AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Be the first to report a scam!',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ],
           ),

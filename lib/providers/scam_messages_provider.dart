@@ -28,13 +28,10 @@ class ScamMessagesNotifier extends StateNotifier<AnalysisState> {
   final String? _userId;
 
   ScamMessagesNotifier(this._detector, this._db, this._userId)
-      : super(const AnalysisState());
+    : super(const AnalysisState());
 
   void analyzeMessage(String text) {
-    state = AnalysisState(
-      status: AnalysisStatus.analyzing,
-      messageText: text,
-    );
+    state = AnalysisState(status: AnalysisStatus.analyzing, messageText: text);
 
     try {
       final result = _detector.analyzeMessage(text);
@@ -96,15 +93,16 @@ final databaseServiceProvider = Provider<DatabaseService>((ref) {
 
 final scamMessagesProvider =
     StateNotifierProvider<ScamMessagesNotifier, AnalysisState>((ref) {
-  return ScamMessagesNotifier(
-    ref.watch(scamDetectorProvider),
-    ref.watch(databaseServiceProvider),
-    ref.watch(authProvider).user?.id,
-  );
-});
+      return ScamMessagesNotifier(
+        ref.watch(scamDetectorProvider),
+        ref.watch(databaseServiceProvider),
+        ref.watch(authProvider).user?.id,
+      );
+    });
 
-final recentScamMessagesProvider =
-    FutureProvider<List<ScamMessage>>((ref) async {
+final recentScamMessagesProvider = FutureProvider<List<ScamMessage>>((
+  ref,
+) async {
   final db = ref.watch(databaseServiceProvider);
   return db.getRecentScamMessages(limit: 10);
 });

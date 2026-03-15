@@ -50,12 +50,12 @@ class CommunityReport {
   }
 
   Map<String, dynamic> toJson() => {
-        if (id != null) 'id': id,
-        'reporter_id': reporterId,
-        'report_type': reportType,
-        'scam_message_id': scamMessageId,
-        'scam_number_id': scamNumberId,
-        'description': description,
-        'created_at': createdAt.toIso8601String(),
-      };
+    if (id != null) 'id': id,
+    'reporter_id': reporterId,
+    'report_type': reportType,
+    'scam_message_id': scamMessageId,
+    'scam_number_id': scamNumberId,
+    'description': description,
+    'created_at': createdAt.toIso8601String(),
+  };
 }

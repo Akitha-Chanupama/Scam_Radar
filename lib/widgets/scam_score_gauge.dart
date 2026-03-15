@@ -5,11 +5,7 @@ class ScamScoreGauge extends StatefulWidget {
   final int score;
   final double size;
 
-  const ScamScoreGauge({
-    super.key,
-    required this.score,
-    this.size = 180,
-  });
+  const ScamScoreGauge({super.key, required this.score, this.size = 180});
 
   @override
   State<ScamScoreGauge> createState() => _ScamScoreGaugeState();
@@ -27,11 +23,10 @@ class _ScamScoreGaugeState extends State<ScamScoreGauge>
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    _animation = Tween<double>(begin: 0, end: widget.score.toDouble())
-        .animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    _animation = Tween<double>(
+      begin: 0,
+      end: widget.score.toDouble(),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -39,13 +34,13 @@ class _ScamScoreGaugeState extends State<ScamScoreGauge>
   void didUpdateWidget(ScamScoreGauge oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.score != widget.score) {
-      _animation = Tween<double>(
-        begin: _animation.value,
-        end: widget.score.toDouble(),
-      ).animate(CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOutCubic,
-      ));
+      _animation =
+          Tween<double>(
+            begin: _animation.value,
+            end: widget.score.toDouble(),
+          ).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+          );
       _controller
         ..reset()
         ..forward();
@@ -87,8 +82,9 @@ class _ScamScoreGaugeState extends State<ScamScoreGauge>
                 painter: _GaugePainter(
                   progress: value / 100,
                   color: color,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.surfaceContainerHighest,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.surfaceContainerHighest,
                 ),
                 child: Center(
                   child: Column(
@@ -96,11 +92,11 @@ class _ScamScoreGaugeState extends State<ScamScoreGauge>
                     children: [
                       Text(
                         '${value.toInt()}%',
-                        style:
-                            Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: color,
-                                ),
+                        style: Theme.of(context).textTheme.headlineLarge
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: color,
+                            ),
                       ),
                       Text(
                         'Scam Score',

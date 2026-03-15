@@ -25,8 +25,7 @@ class MessageAnalysisScreen extends ConsumerStatefulWidget {
       _MessageAnalysisScreenState();
 }
 
-class _MessageAnalysisScreenState
-    extends ConsumerState<MessageAnalysisScreen> {
+class _MessageAnalysisScreenState extends ConsumerState<MessageAnalysisScreen> {
   bool _isReporting = false;
   bool _isReported = false;
 
@@ -85,10 +84,14 @@ class _MessageAnalysisScreenState
           children: [
             _buildThreatBanner(context, isDark),
             const SizedBox(height: 24),
-            Center(
-              child: ScamScoreGauge(score: widget.scamScore),
-            ).animate().fadeIn(delay: 200.ms).scale(
-                begin: const Offset(0.8, 0.8), duration: 600.ms, curve: Curves.elasticOut),
+            Center(child: ScamScoreGauge(score: widget.scamScore))
+                .animate()
+                .fadeIn(delay: 200.ms)
+                .scale(
+                  begin: const Offset(0.8, 0.8),
+                  duration: 600.ms,
+                  curve: Curves.elasticOut,
+                ),
             const SizedBox(height: 28),
             _buildMessageCard(context, isDark),
             const SizedBox(height: 20),
@@ -110,7 +113,11 @@ class _MessageAnalysisScreenState
           : AppColors.bgLight.withValues(alpha: 0.95),
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.cyan, size: 20),
+        icon: const Icon(
+          Icons.arrow_back_ios_new,
+          color: AppColors.cyan,
+          size: 20,
+        ),
         onPressed: () => context.pop(),
       ),
       title: const Text(
@@ -143,7 +150,10 @@ class _MessageAnalysisScreenState
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _scoreColor.withValues(alpha: 0.35), width: 1),
+        border: Border.all(
+          color: _scoreColor.withValues(alpha: 0.35),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       child: Row(
@@ -158,15 +168,15 @@ class _MessageAnalysisScreenState
                 BoxShadow(
                   color: _scoreColor.withValues(alpha: 0.3),
                   blurRadius: 12,
-                )
+                ),
               ],
             ),
             child: Icon(
               widget.scamScore >= 60
                   ? Icons.gpp_bad_outlined
                   : widget.scamScore >= 30
-                      ? Icons.gpp_maybe_outlined
-                      : Icons.verified_user_outlined,
+                  ? Icons.gpp_maybe_outlined
+                  : Icons.verified_user_outlined,
               color: _scoreColor,
               size: 22,
             ),
@@ -186,9 +196,9 @@ class _MessageAnalysisScreenState
               ),
               Text(
                 'Threat score: ${widget.scamScore}/100',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
               ),
             ],
           ),
@@ -204,12 +214,11 @@ class _MessageAnalysisScreenState
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.55 : 0.85),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.12),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.55 : 0.85,
             ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.cyan.withValues(alpha: 0.12)),
           ),
           padding: const EdgeInsets.all(18),
           child: Column(
@@ -217,15 +226,18 @@ class _MessageAnalysisScreenState
             children: [
               Row(
                 children: [
-                  const Icon(Icons.message_outlined,
-                      color: AppColors.cyan, size: 18),
+                  const Icon(
+                    Icons.message_outlined,
+                    color: AppColors.cyan,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Analyzed Message',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.cyan,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.cyan,
+                    ),
                   ),
                 ],
               ),
@@ -244,11 +256,11 @@ class _MessageAnalysisScreenState
                 child: Text(
                   widget.messageText,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: isDark
-                            ? AppColors.textPrimary.withValues(alpha: 0.85)
-                            : Colors.black87,
-                        height: 1.5,
-                      ),
+                    color: isDark
+                        ? AppColors.textPrimary.withValues(alpha: 0.85)
+                        : Colors.black87,
+                    height: 1.5,
+                  ),
                 ),
               ),
             ],
@@ -265,12 +277,11 @@ class _MessageAnalysisScreenState
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.55 : 0.85),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: _scoreColor.withValues(alpha: 0.2),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.55 : 0.85,
             ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: _scoreColor.withValues(alpha: 0.2)),
           ),
           padding: const EdgeInsets.all(18),
           child: Column(
@@ -278,15 +289,18 @@ class _MessageAnalysisScreenState
             children: [
               Row(
                 children: [
-                  Icon(Icons.warning_amber_rounded,
-                      color: _scoreColor, size: 18),
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: _scoreColor,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'Detection Indicators',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _scoreColor,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: _scoreColor,
+                    ),
                   ),
                 ],
               ),
@@ -316,7 +330,8 @@ class _MessageAnalysisScreenState
           color: const Color(0xFF00D97E).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-              color: const Color(0xFF00D97E).withValues(alpha: 0.35)),
+            color: const Color(0xFF00D97E).withValues(alpha: 0.35),
+          ),
         ),
         padding: const EdgeInsets.all(18),
         child: const Row(
@@ -362,11 +377,14 @@ class _MessageAnalysisScreenState
                       width: 18,
                       height: 18,
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : const Icon(Icons.flag_outlined, size: 18),
-              label:
-                  Text(_isReporting ? 'Reporting...' : 'Report This Message'),
+              label: Text(
+                _isReporting ? 'Reporting...' : 'Report This Message',
+              ),
             ),
           ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.1),
         const SizedBox(height: 10),
@@ -389,38 +407,44 @@ class _ReasonChip extends StatelessWidget {
   final String reason;
   final Color color;
   final int delay;
-  const _ReasonChip({required this.reason, required this.color, required this.delay});
+  const _ReasonChip({
+    required this.reason,
+    required this.color,
+    required this.delay,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.warning_amber_rounded, size: 14, color: color),
-          const SizedBox(width: 5),
-          Flexible(
-            child: Text(
-              reason,
-              style: TextStyle(
-                fontSize: 12,
-                color: color,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
           ),
-        ],
-      ),
-    )
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.warning_amber_rounded, size: 14, color: color),
+              const SizedBox(width: 5),
+              Flexible(
+                child: Text(
+                  reason,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: color,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
         .animate()
-        .fadeIn(delay: Duration(milliseconds: delay), duration: 300.ms)
+        .fadeIn(
+          delay: Duration(milliseconds: delay),
+          duration: 300.ms,
+        )
         .scale(begin: const Offset(0.85, 0.85));
   }
 }
-

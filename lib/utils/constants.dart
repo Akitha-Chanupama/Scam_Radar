@@ -106,9 +106,7 @@ class ScamKeywords {
   ];
 
   /// Pattern to detect phone numbers (Sri Lankan and international).
-  static final RegExp phonePattern = RegExp(
-    r'(\+?94|0)\d{9,10}|\+?\d{10,15}',
-  );
+  static final RegExp phonePattern = RegExp(r'(\+?94|0)\d{9,10}|\+?\d{10,15}');
 
   /// Scam type categories for reporting.
   static const List<String> scamTypes = [

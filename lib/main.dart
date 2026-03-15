@@ -22,9 +22,5 @@ Future<void> main() async {
   // Request runtime permissions
   await PermissionService.requestAll();
 
-  runApp(
-    const ProviderScope(
-      child: ScamRadarApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: ScamRadarApp()));
 }

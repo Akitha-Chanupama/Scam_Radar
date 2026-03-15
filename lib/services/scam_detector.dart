@@ -59,8 +59,9 @@ class ScamDetector {
       // Shortened URLs get extra penalty
       for (final match in urlMatches) {
         final url = match.group(0) ?? '';
-        if (ScamKeywords.shortenedUrlDomains
-            .any((d) => url.contains(d.toLowerCase()))) {
+        if (ScamKeywords.shortenedUrlDomains.any(
+          (d) => url.contains(d.toLowerCase()),
+        )) {
           rawScore += 10;
           reasons.add('Shortened/masked URL detected: "$url"');
           break;
@@ -70,8 +71,10 @@ class ScamDetector {
 
     // 6. Check for phone numbers asking to call/text (weight: 5)
     if (ScamKeywords.phonePattern.hasMatch(lowerText) &&
-        (lowerText.contains('call') || lowerText.contains('text') ||
-         lowerText.contains('contact') || lowerText.contains('whatsapp'))) {
+        (lowerText.contains('call') ||
+            lowerText.contains('text') ||
+            lowerText.contains('contact') ||
+            lowerText.contains('whatsapp'))) {
       rawScore += 5;
       reasons.add('Contains phone number with call-to-action');
     }
@@ -92,9 +95,17 @@ class ScamDetector {
 
     // 8. Asking for personal information (weight: 10)
     final personalInfoPatterns = [
-      'bank account', 'credit card', 'debit card', 'cvv', 'pin number',
-      'social security', 'nic number', 'national id', 'password',
-      'otp', 'verification code',
+      'bank account',
+      'credit card',
+      'debit card',
+      'cvv',
+      'pin number',
+      'social security',
+      'nic number',
+      'national id',
+      'password',
+      'otp',
+      'verification code',
     ];
     for (final pattern in personalInfoPatterns) {
       if (lowerText.contains(pattern)) {

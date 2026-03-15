@@ -6,7 +6,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../config/theme.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/scam_messages_provider.dart' show databaseServiceProvider;
+import '../../providers/scam_messages_provider.dart'
+    show databaseServiceProvider;
 import '../../providers/theme_provider.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -17,8 +18,7 @@ class ProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authProvider);
     final isDark = ref.watch(themeProvider) == ThemeMode.dark;
 
-    final name =
-        authState.user?.userMetadata?['name'] as String? ?? 'User';
+    final name = authState.user?.userMetadata?['name'] as String? ?? 'User';
     final email = authState.user?.email ?? '';
 
     return Scaffold(
@@ -68,7 +68,11 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Widget _buildAvatarSection(
-      BuildContext context, String name, String email, bool isDark) {
+    BuildContext context,
+    String name,
+    String email,
+    bool isDark,
+  ) {
     final initials = name.isNotEmpty ? name[0].toUpperCase() : 'U';
     return Column(
       children: [
@@ -118,28 +122,20 @@ class ProfileScreen extends ConsumerWidget {
         const SizedBox(height: 14),
         Text(
           name,
-          style: Theme.of(context)
-              .textTheme
-              .titleLarge
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           email,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
         ),
       ],
-    )
-        .animate()
-        .fadeIn(duration: 400.ms)
-        .scale(begin: const Offset(0.9, 0.9));
+    ).animate().fadeIn(duration: 400.ms).scale(begin: const Offset(0.9, 0.9));
   }
 
-  Widget _buildStatsSection(
-      BuildContext context, WidgetRef ref, bool isDark) {
+  Widget _buildStatsSection(BuildContext context, WidgetRef ref, bool isDark) {
     return FutureBuilder<Map<String, dynamic>>(
       future: ref.read(databaseServiceProvider).getScamStats(),
       builder: (context, snap) {
@@ -210,27 +206,24 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingsCard(
-      BuildContext context, WidgetRef ref, bool isDark) {
+  Widget _buildSettingsCard(BuildContext context, WidgetRef ref, bool isDark) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.55 : 0.85),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.12),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.55 : 0.85,
             ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.cyan.withValues(alpha: 0.12)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding:
-                    const EdgeInsets.fromLTRB(18, 16, 18, 8),
+                padding: const EdgeInsets.fromLTRB(18, 16, 18, 8),
                 child: Text(
                   'SETTINGS',
                   style: TextStyle(
@@ -248,8 +241,7 @@ class ProfileScreen extends ConsumerWidget {
                 label: 'Dark Mode',
                 trailing: Switch(
                   value: isDark,
-                  onChanged: (_) =>
-                      ref.read(themeProvider.notifier).toggle(),
+                  onChanged: (_) => ref.read(themeProvider.notifier).toggle(),
                   activeThumbColor: AppColors.cyan,
                 ),
               ),
@@ -314,10 +306,9 @@ class ProfileScreen extends ConsumerWidget {
       ),
       title: Text(
         label,
-        style:
-            Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
+        style: Theme.of(
+          context,
+        ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
       ),
       trailing: trailing,
     );
@@ -332,9 +323,7 @@ class ProfileScreen extends ConsumerWidget {
         foregroundColor: AppColors.errorRed,
         side: const BorderSide(color: AppColors.errorRed, width: 1.5),
         padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ).animate().fadeIn(delay: 450.ms);
   }
@@ -388,59 +377,61 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-        child: Container(
-          decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.55 : 0.85),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: color.withValues(alpha: 0.18),
+          borderRadius: BorderRadius.circular(14),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+            child: Container(
+              decoration: BoxDecoration(
+                color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+                  alpha: isDark ? 0.55 : 0.85,
+                ),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: color.withValues(alpha: 0.18)),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.08),
+                    blurRadius: 12,
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.12),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(icon, color: color, size: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      color: color,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.08),
-                blurRadius: 12,
-              ),
-            ],
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: color, size: 18),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: color,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                label,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 11,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: 200 + delay)).scale(
+        )
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: 200 + delay))
+        .scale(
           begin: const Offset(0.85, 0.85),
           curve: Curves.elasticOut,
           duration: 600.ms,

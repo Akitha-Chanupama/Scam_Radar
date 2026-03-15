@@ -60,9 +60,9 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
             children: [
               Text(
                 'Scan Screenshot',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               IconButton(
@@ -92,9 +92,7 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
                 color: Theme.of(context).colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: SingleChildScrollView(
-                child: Text(_extractedText!),
-              ),
+              child: SingleChildScrollView(child: Text(_extractedText!)),
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(

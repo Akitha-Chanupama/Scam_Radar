@@ -47,7 +47,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      await ref.read(authProvider.notifier).signIn(
+      await ref
+          .read(authProvider.notifier)
+          .signIn(
             email: _emailController.text.trim(),
             password: _passwordController.text,
           );
@@ -98,108 +100,133 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                   Text(
                     'Scam Radar',
                     style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.cyan,
-                          letterSpacing: 1.5,
-                        ),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.cyan,
+                      letterSpacing: 1.5,
+                    ),
                   ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2),
                   const SizedBox(height: 6),
                   Text(
                     'Detect & report scams in Sri Lanka',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                      color: AppColors.textSecondary,
+                    ),
                   ).animate().fadeIn(delay: 200.ms, duration: 500.ms),
                   const SizedBox(height: 40),
 
                   // ── Glassmorphism Card ──
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: (isDark ? AppColors.cardDark : Colors.white)
-                              .withValues(alpha: isDark ? 0.6 : 0.85),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: AppColors.cyan.withValues(alpha: 0.18),
-                            width: 1.2,
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color:
+                                  (isDark ? AppColors.cardDark : Colors.white)
+                                      .withValues(alpha: isDark ? 0.6 : 0.85),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: AppColors.cyan.withValues(alpha: 0.18),
+                                width: 1.2,
+                              ),
+                            ),
+                            padding: const EdgeInsets.all(28),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    'Welcome back',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ).animate().fadeIn(delay: 300.ms),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Sign in to your account',
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
+                                  ).animate().fadeIn(delay: 400.ms),
+                                  const SizedBox(height: 24),
+
+                                  // Email
+                                  TextFormField(
+                                        controller: _emailController,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        textInputAction: TextInputAction.next,
+                                        validator: Validators.email,
+                                        style: const TextStyle(
+                                          color: AppColors.textPrimary,
+                                        ),
+                                        decoration: const InputDecoration(
+                                          labelText: 'Email',
+                                          prefixIcon: Icon(
+                                            Icons.email_outlined,
+                                          ),
+                                        ),
+                                      )
+                                      .animate()
+                                      .fadeIn(delay: 450.ms)
+                                      .slideX(begin: -0.1),
+                                  const SizedBox(height: 16),
+
+                                  // Password
+                                  TextFormField(
+                                        controller: _passwordController,
+                                        obscureText: _obscurePassword,
+                                        textInputAction: TextInputAction.done,
+                                        validator: Validators.password,
+                                        onFieldSubmitted: (_) => _signIn(),
+                                        style: const TextStyle(
+                                          color: AppColors.textPrimary,
+                                        ),
+                                        decoration: InputDecoration(
+                                          labelText: 'Password',
+                                          prefixIcon: const Icon(
+                                            Icons.lock_outlined,
+                                          ),
+                                          suffixIcon: IconButton(
+                                            onPressed: () => setState(
+                                              () => _obscurePassword =
+                                                  !_obscurePassword,
+                                            ),
+                                            icon: Icon(
+                                              _obscurePassword
+                                                  ? Icons
+                                                        .visibility_off_outlined
+                                                  : Icons.visibility_outlined,
+                                              color: AppColors.textSecondary,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .animate()
+                                      .fadeIn(delay: 500.ms)
+                                      .slideX(begin: -0.1),
+                                  const SizedBox(height: 28),
+
+                                  // Sign In Button
+                                  _GlowButton(
+                                        onPressed: _isLoading ? null : _signIn,
+                                        isLoading: _isLoading,
+                                        label: 'Sign In',
+                                      )
+                                      .animate()
+                                      .fadeIn(delay: 600.ms)
+                                      .slideY(begin: 0.2),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        padding: const EdgeInsets.all(28),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                'Welcome back',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              ).animate().fadeIn(delay: 300.ms),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Sign in to your account',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall,
-                              ).animate().fadeIn(delay: 400.ms),
-                              const SizedBox(height: 24),
-
-                              // Email
-                              TextFormField(
-                                controller: _emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                                validator: Validators.email,
-                                style: const TextStyle(color: AppColors.textPrimary),
-                                decoration: const InputDecoration(
-                                  labelText: 'Email',
-                                  prefixIcon: Icon(Icons.email_outlined),
-                                ),
-                              ).animate().fadeIn(delay: 450.ms).slideX(begin: -0.1),
-                              const SizedBox(height: 16),
-
-                              // Password
-                              TextFormField(
-                                controller: _passwordController,
-                                obscureText: _obscurePassword,
-                                textInputAction: TextInputAction.done,
-                                validator: Validators.password,
-                                onFieldSubmitted: (_) => _signIn(),
-                                style: const TextStyle(color: AppColors.textPrimary),
-                                decoration: InputDecoration(
-                                  labelText: 'Password',
-                                  prefixIcon: const Icon(Icons.lock_outlined),
-                                  suffixIcon: IconButton(
-                                    onPressed: () => setState(
-                                        () => _obscurePassword = !_obscurePassword),
-                                    icon: Icon(
-                                      _obscurePassword
-                                          ? Icons.visibility_off_outlined
-                                          : Icons.visibility_outlined,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 500.ms).slideX(begin: -0.1),
-                              const SizedBox(height: 28),
-
-                              // Sign In Button
-                              _GlowButton(
-                                onPressed: _isLoading ? null : _signIn,
-                                isLoading: _isLoading,
-                                label: 'Sign In',
-                              ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 250.ms, duration: 500.ms).scale(begin: const Offset(0.97, 0.97)),
+                      )
+                      .animate()
+                      .fadeIn(delay: 250.ms, duration: 500.ms)
+                      .scale(begin: const Offset(0.97, 0.97)),
 
                   const SizedBox(height: 20),
                   Row(
@@ -239,18 +266,21 @@ class _RadarLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 100,
-      height: 100,
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (_, anim) => CustomPaint(
-          painter: _RadarPainter(controller.value),
-        ),
-      ),
-    )
+          width: 100,
+          height: 100,
+          child: AnimatedBuilder(
+            animation: controller,
+            builder: (_, anim) =>
+                CustomPaint(painter: _RadarPainter(controller.value)),
+          ),
+        )
         .animate()
         .fadeIn(duration: 800.ms)
-        .scale(begin: const Offset(0.5, 0.5), duration: 800.ms, curve: Curves.elasticOut);
+        .scale(
+          begin: const Offset(0.5, 0.5),
+          duration: 800.ms,
+          curve: Curves.elasticOut,
+        );
   }
 }
 
@@ -278,8 +308,16 @@ class _RadarPainter extends CustomPainter {
     final crossPaint = Paint()
       ..color = cyan.withValues(alpha: 0.2)
       ..strokeWidth = 1;
-    canvas.drawLine(Offset(center.dx, 0), Offset(center.dx, size.height), crossPaint);
-    canvas.drawLine(Offset(0, center.dy), Offset(size.width, center.dy), crossPaint);
+    canvas.drawLine(
+      Offset(center.dx, 0),
+      Offset(center.dx, size.height),
+      crossPaint,
+    );
+    canvas.drawLine(
+      Offset(0, center.dy),
+      Offset(size.width, center.dy),
+      crossPaint,
+    );
 
     // Sweep arc (gradient fill)
     final sweepAngle = -3.14 / 2 + sweep * 2 * 3.14159;
@@ -322,8 +360,16 @@ class _RadarPainter extends CustomPainter {
 
     // Blip dots
     final dotPaint = Paint()..color = cyan;
-    canvas.drawCircle(center + Offset(radius * 0.35, -radius * 0.2), 3, dotPaint);
-    canvas.drawCircle(center + Offset(-radius * 0.5, radius * 0.3), 2.5, dotPaint);
+    canvas.drawCircle(
+      center + Offset(radius * 0.35, -radius * 0.2),
+      3,
+      dotPaint,
+    );
+    canvas.drawCircle(
+      center + Offset(-radius * 0.5, radius * 0.3),
+      2.5,
+      dotPaint,
+    );
   }
 
   @override
@@ -336,7 +382,11 @@ class _GlowButton extends StatelessWidget {
   final bool isLoading;
   final String label;
 
-  const _GlowButton({required this.onPressed, required this.isLoading, required this.label});
+  const _GlowButton({
+    required this.onPressed,
+    required this.isLoading,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -7,11 +7,7 @@ class ScamCard extends StatelessWidget {
   final CommunityReport report;
   final VoidCallback? onTap;
 
-  const ScamCard({
-    super.key,
-    required this.report,
-    this.onTap,
-  });
+  const ScamCard({super.key, required this.report, this.onTap});
 
   IconData _typeIcon() {
     return report.reportType == 'message'
@@ -86,22 +82,22 @@ class ScamCard extends StatelessWidget {
                           report.reportType == 'message'
                               ? 'Scam Message'
                               : 'Scam Number',
-                          style:
-                              Theme.of(context).textTheme.titleSmall?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         const Spacer(),
                         if (_trailingText().isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: report.reportType == 'message'
                                   ? _scoreBadgeColor().withValues(alpha: 0.15)
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .tertiaryContainer,
+                                  : Theme.of(
+                                      context,
+                                    ).colorScheme.tertiaryContainer,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -111,9 +107,9 @@ class ScamCard extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                                 color: report.reportType == 'message'
                                     ? _scoreBadgeColor()
-                                    : Theme.of(context)
-                                        .colorScheme
-                                        .onTertiaryContainer,
+                                    : Theme.of(
+                                        context,
+                                      ).colorScheme.onTertiaryContainer,
                               ),
                             ),
                           ),
@@ -125,51 +121,49 @@ class ScamCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.7),
-                          ),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
                         if (report.reporterName != null) ...[
-                          Icon(Icons.person_outline,
-                              size: 14,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withValues(alpha: 0.5)),
+                          Icon(
+                            Icons.person_outline,
+                            size: 14,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.5),
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             report.reporterName!,
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.5),
-                                    ),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.5),
+                                ),
                           ),
                           const SizedBox(width: 12),
                         ],
-                        Icon(Icons.access_time,
-                            size: 14,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.5)),
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.5),
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           timeago.format(report.createdAt),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withValues(alpha: 0.5),
-                                  ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withValues(alpha: 0.5),
+                              ),
                         ),
                       ],
                     ),

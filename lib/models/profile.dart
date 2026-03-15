@@ -14,18 +14,18 @@ class Profile {
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) => Profile(
-        id: json['id'] as String,
-        name: json['name'] as String? ?? '',
-        email: json['email'] as String? ?? '',
-        avatarUrl: json['avatar_url'] as String?,
-        createdAt: DateTime.parse(json['created_at'] as String),
-      );
+    id: json['id'] as String,
+    name: json['name'] as String? ?? '',
+    email: json['email'] as String? ?? '',
+    avatarUrl: json['avatar_url'] as String?,
+    createdAt: DateTime.parse(json['created_at'] as String),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'email': email,
-        'avatar_url': avatarUrl,
-        'created_at': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'name': name,
+    'email': email,
+    'avatar_url': avatarUrl,
+    'created_at': createdAt.toIso8601String(),
+  };
 }

@@ -46,9 +46,10 @@ class ScamNumbersNotifier extends StateNotifier<AsyncValue<List<ScamNumber>>> {
 // ── Providers ──
 
 final scamNumbersProvider =
-    StateNotifierProvider<ScamNumbersNotifier, AsyncValue<List<ScamNumber>>>(
-        (ref) {
-  return ScamNumbersNotifier(
-    DatabaseService(ref.watch(supabaseClientProvider)),
-  );
-});
+    StateNotifierProvider<ScamNumbersNotifier, AsyncValue<List<ScamNumber>>>((
+      ref,
+    ) {
+      return ScamNumbersNotifier(
+        DatabaseService(ref.watch(supabaseClientProvider)),
+      );
+    });

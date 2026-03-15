@@ -8,7 +8,8 @@ import '../../config/theme.dart';
 import '../../models/community_report.dart';
 import '../../models/scam_number.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/scam_messages_provider.dart' show databaseServiceProvider;
+import '../../providers/scam_messages_provider.dart'
+    show databaseServiceProvider;
 import '../../providers/scam_numbers_provider.dart';
 import '../../utils/constants.dart';
 
@@ -16,8 +17,7 @@ class ReportNumberScreen extends ConsumerStatefulWidget {
   const ReportNumberScreen({super.key});
 
   @override
-  ConsumerState<ReportNumberScreen> createState() =>
-      _ReportNumberScreenState();
+  ConsumerState<ReportNumberScreen> createState() => _ReportNumberScreenState();
 }
 
 class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
@@ -45,8 +45,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
       return;
     }
     setState(() => _isSearching = true);
-    final result =
-        await ref.read(scamNumbersProvider.notifier).searchNumber(phone);
+    final result = await ref
+        .read(scamNumbersProvider.notifier)
+        .searchNumber(phone);
     setState(() {
       _existingReport = result;
       _isSearching = false;
@@ -70,7 +71,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
         lng = coords[1];
       }
 
-      await ref.read(scamNumbersProvider.notifier).reportNumber(
+      await ref
+          .read(scamNumbersProvider.notifier)
+          .reportNumber(
             phoneNumber: _phoneCtrl.text.trim(),
             scamType: _selectedScamType,
             region: _selectedRegion,
@@ -83,7 +86,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
           .read(scamNumbersProvider.notifier)
           .searchNumber(_phoneCtrl.text.trim());
 
-      await ref.read(databaseServiceProvider).insertCommunityReport(
+      await ref
+          .read(databaseServiceProvider)
+          .insertCommunityReport(
             CommunityReport(
               reporterId: user.id,
               reportType: 'number',
@@ -207,7 +212,11 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.flag, color: AppColors.errorRed, size: 22),
+                child: const Icon(
+                  Icons.flag,
+                  color: AppColors.errorRed,
+                  size: 22,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -240,7 +249,10 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
   }
 
   Widget _buildWarningBanner(
-      BuildContext context, ScamNumber existing, bool isDark) {
+    BuildContext context,
+    ScamNumber existing,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -253,8 +265,11 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          const Icon(Icons.warning_amber_rounded,
-              color: Color(0xFFFFB020), size: 20),
+          const Icon(
+            Icons.warning_amber_rounded,
+            color: Color(0xFFFFB020),
+            size: 20,
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -278,12 +293,11 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
         filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
         child: Container(
           decoration: BoxDecoration(
-            color: (isDark ? AppColors.cardDark : Colors.white)
-                .withValues(alpha: isDark ? 0.55 : 0.85),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.12),
+            color: (isDark ? AppColors.cardDark : Colors.white).withValues(
+              alpha: isDark ? 0.55 : 0.85,
             ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.cyan.withValues(alpha: 0.12)),
           ),
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -326,10 +340,7 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                   prefixIcon: Icon(Icons.category, color: AppColors.cyan),
                 ),
                 items: ScamKeywords.scamTypes
-                    .map((t) => DropdownMenuItem(
-                          value: t,
-                          child: Text(t),
-                        ))
+                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                     .toList(),
                 onChanged: (v) {
                   if (v != null) setState(() => _selectedScamType = v);
@@ -342,8 +353,10 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                 initialValue: _selectedRegion,
                 decoration: const InputDecoration(
                   labelText: 'Region (optional)',
-                  prefixIcon:
-                      Icon(Icons.location_on_outlined, color: AppColors.cyan),
+                  prefixIcon: Icon(
+                    Icons.location_on_outlined,
+                    color: AppColors.cyan,
+                  ),
                 ),
                 hint: const Text('Select district'),
                 items: [
@@ -351,8 +364,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                     value: null,
                     child: Text('None'),
                   ),
-                  ...ScamKeywords.sriLankanDistricts.keys.map((d) =>
-                      DropdownMenuItem(value: d, child: Text(d))),
+                  ...ScamKeywords.sriLankanDistricts.keys.map(
+                    (d) => DropdownMenuItem(value: d, child: Text(d)),
+                  ),
                 ],
                 onChanged: (v) => setState(() => _selectedRegion = v),
               ),
@@ -364,8 +378,7 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                 maxLines: 3,
                 decoration: const InputDecoration(
                   labelText: 'Description (optional)',
-                  prefixIcon:
-                      Icon(Icons.notes_outlined, color: AppColors.cyan),
+                  prefixIcon: Icon(Icons.notes_outlined, color: AppColors.cyan),
                   hintText: 'Tell us what this scammer said…',
                   alignLabelWithHint: true,
                 ),
@@ -396,12 +409,17 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(
-                    strokeWidth: 2, color: Colors.white),
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
               )
             : const Icon(Icons.send, size: 18),
         label: Text(
           _isSubmitting ? 'Submitting…' : 'Submit Report',
-          style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 0.5),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.errorRed,
@@ -423,26 +441,29 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 88,
-              height: 88,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF00D97E).withValues(alpha: 0.12),
-                border: Border.all(
-                  color: const Color(0xFF00D97E).withValues(alpha: 0.4),
-                  width: 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF00D97E).withValues(alpha: 0.2),
-                    blurRadius: 24,
-                    spreadRadius: 4,
+                  width: 88,
+                  height: 88,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF00D97E).withValues(alpha: 0.12),
+                    border: Border.all(
+                      color: const Color(0xFF00D97E).withValues(alpha: 0.4),
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF00D97E).withValues(alpha: 0.2),
+                        blurRadius: 24,
+                        spreadRadius: 4,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: const Icon(Icons.check_rounded,
-                  color: Color(0xFF00D97E), size: 44),
-            )
+                  child: const Icon(
+                    Icons.check_rounded,
+                    color: Color(0xFF00D97E),
+                    size: 44,
+                  ),
+                )
                 .animate()
                 .scale(
                   begin: const Offset(0.5, 0.5),
@@ -453,17 +474,18 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
             const SizedBox(height: 28),
             Text(
               'Report Submitted!',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
             ).animate().fadeIn(delay: 200.ms),
             const SizedBox(height: 10),
             Text(
               'Thank you for helping protect the community from scammers.',
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  color: AppColors.textSecondary, fontSize: 15),
+                color: AppColors.textSecondary,
+                fontSize: 15,
+              ),
             ).animate().fadeIn(delay: 300.ms),
             const SizedBox(height: 40),
             OutlinedButton.icon(
@@ -483,7 +505,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                 foregroundColor: AppColors.cyan,
                 side: const BorderSide(color: AppColors.cyan),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 28, vertical: 14),
+                  horizontal: 28,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

@@ -26,11 +26,13 @@ class AiScamService {
   final String? _edgeFunctionUrl;
 
   AiScamService({String? edgeFunctionUrl})
-      : _dio = Dio(BaseOptions(
+    : _dio = Dio(
+        BaseOptions(
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 30),
-        )),
-        _edgeFunctionUrl = edgeFunctionUrl;
+        ),
+      ),
+      _edgeFunctionUrl = edgeFunctionUrl;
 
   bool get isConfigured =>
       _edgeFunctionUrl != null && _edgeFunctionUrl.isNotEmpty;
