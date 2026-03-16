@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math' show sqrt;
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -112,11 +113,22 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
         return;
       }
 
+      // On Android without GMS (e.g. Huawei EMUI/HarmonyOS), the default
+      // FusedLocationProvider throws LocationServiceDisabledException even
+      // when GPS is on. Force the native Android LocationManager instead.
+      final LocationSettings locationSettings = Platform.isAndroid
+          ? AndroidSettings(
+              accuracy: LocationAccuracy.medium,
+              forceLocationManager: true,
+              timeLimit: const Duration(seconds: 15),
+            )
+          : const LocationSettings(
+              accuracy: LocationAccuracy.medium,
+              timeLimit: Duration(seconds: 15),
+            );
+
       final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium,
-          timeLimit: Duration(seconds: 15),
-        ),
+        locationSettings: locationSettings,
       );
 
       setState(() {
@@ -478,10 +490,7 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
             const SizedBox(width: 8),
             Text(
               'Location (optional)',
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
             const Spacer(),
             Container(
@@ -576,85 +585,83 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                   ),
                 ),
               ),
-              if (_gpsError != null) ...
-                [
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.errorRed.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.errorRed.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: Text(
-                      _gpsError!,
-                      style: const TextStyle(
-                        color: AppColors.errorRed,
-                        fontSize: 12,
-                      ),
+              if (_gpsError != null) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.errorRed.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.errorRed.withValues(alpha: 0.3),
                     ),
                   ),
-                ],
-              if (_gpsLat != null && _gpsLng != null) ...
-                [
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 10,
+                  child: Text(
+                    _gpsError!,
+                    style: const TextStyle(
+                      color: AppColors.errorRed,
+                      fontSize: 12,
                     ),
-                    decoration: BoxDecoration(
-                      color: AppColors.cyan.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.cyan.withValues(alpha: 0.25),
+                  ),
+                ),
+              ],
+              if (_gpsLat != null && _gpsLng != null) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.cyan.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.cyan.withValues(alpha: 0.25),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.gps_fixed,
+                        color: AppColors.cyan,
+                        size: 16,
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.gps_fixed,
-                          color: AppColors.cyan,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (_gpsNearestDistrict != null)
-                                Text(
-                                  _gpsNearestDistrict!,
-                                  style: const TextStyle(
-                                    color: AppColors.cyan,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
-                                ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (_gpsNearestDistrict != null)
                               Text(
-                                '${_gpsLat!.toStringAsFixed(5)}, ${_gpsLng!.toStringAsFixed(5)}',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 11,
+                                _gpsNearestDistrict!,
+                                style: const TextStyle(
+                                  color: AppColors.cyan,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
                                 ),
                               ),
-                            ],
-                          ),
+                            Text(
+                              '${_gpsLat!.toStringAsFixed(5)}, ${_gpsLng!.toStringAsFixed(5)}',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ],
                         ),
-                        const Icon(
-                          Icons.check_circle,
-                          color: AppColors.cyan,
-                          size: 16,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const Icon(
+                        Icons.check_circle,
+                        color: AppColors.cyan,
+                        size: 16,
+                      ),
+                    ],
                   ),
-                ],
+                ),
+              ],
             ],
           ),
       ],
@@ -673,7 +680,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: selected ? AppColors.cyan.withValues(alpha: 0.15) : Colors.transparent,
+          color: selected
+              ? AppColors.cyan.withValues(alpha: 0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
