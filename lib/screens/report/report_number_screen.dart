@@ -1,7 +1,9 @@
+import 'dart:math' show sqrt;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../config/theme.dart';
@@ -32,6 +34,14 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
   bool _isSubmitting = false;
   bool _isSubmitted = false;
 
+  // GPS location state
+  bool _useGps = false;
+  double? _gpsLat;
+  double? _gpsLng;
+  String? _gpsNearestDistrict;
+  bool _gettingLocation = false;
+  String? _gpsError;
+
   @override
   void dispose() {
     _phoneCtrl.dispose();
@@ -54,6 +64,81 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
     });
   }
 
+  /// Return the name of the district whose centre is closest to [lat]/[lng].
+  String? _nearestDistrict(double lat, double lng) {
+    String? closest;
+    double minDist = double.infinity;
+    ScamKeywords.sriLankanDistricts.forEach((name, coords) {
+      final dlat = lat - coords[0];
+      final dlng = lng - coords[1];
+      final d = sqrt(dlat * dlat + dlng * dlng);
+      if (d < minDist) {
+        minDist = d;
+        closest = name;
+      }
+    });
+    return closest;
+  }
+
+  Future<void> _getGpsLocation() async {
+    setState(() {
+      _gettingLocation = true;
+      _gpsError = null;
+    });
+
+    try {
+      // Check/request permission first.
+      // NOTE: We skip isLocationServiceEnabled() — on some Android devices
+      // (e.g. Huawei EMUI) it falsely returns false even when GPS is on.
+      // If the service is genuinely off, getCurrentPosition() will throw
+      // LocationServiceDisabledException which we catch below.
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _gpsError = 'Location permission denied.';
+            _gettingLocation = false;
+          });
+          return;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _gpsError =
+              'Location permission permanently denied.\nPlease enable it in App Settings.';
+          _gettingLocation = false;
+        });
+        return;
+      }
+
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 15),
+        ),
+      );
+
+      setState(() {
+        _gpsLat = pos.latitude;
+        _gpsLng = pos.longitude;
+        _gpsNearestDistrict = _nearestDistrict(pos.latitude, pos.longitude);
+        _gettingLocation = false;
+      });
+    } on LocationServiceDisabledException {
+      setState(() {
+        _gpsError =
+            'Device location/GPS is turned off.\nPlease enable it in your device settings.';
+        _gettingLocation = false;
+      });
+    } catch (e) {
+      setState(() {
+        _gpsError = 'Could not get location: ${e.toString()}';
+        _gettingLocation = false;
+      });
+    }
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -65,10 +150,17 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
     try {
       double? lat;
       double? lng;
-      if (_selectedRegion != null) {
+      String? region;
+
+      if (_useGps && _gpsLat != null && _gpsLng != null) {
+        lat = _gpsLat;
+        lng = _gpsLng;
+        region = _gpsNearestDistrict;
+      } else if (_selectedRegion != null) {
         final coords = ScamKeywords.sriLankanDistricts[_selectedRegion!]!;
         lat = coords[0];
         lng = coords[1];
+        region = _selectedRegion;
       }
 
       await ref
@@ -76,7 +168,7 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
           .reportNumber(
             phoneNumber: _phoneCtrl.text.trim(),
             scamType: _selectedScamType,
-            region: _selectedRegion,
+            region: region,
             latitude: lat,
             longitude: lng,
           );
@@ -348,28 +440,9 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Region dropdown
-              DropdownButtonFormField<String?>(
-                initialValue: _selectedRegion,
-                decoration: const InputDecoration(
-                  labelText: 'Region (optional)',
-                  prefixIcon: Icon(
-                    Icons.location_on_outlined,
-                    color: AppColors.cyan,
-                  ),
-                ),
-                hint: const Text('Select district'),
-                items: [
-                  const DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text('None'),
-                  ),
-                  ...ScamKeywords.sriLankanDistricts.keys.map(
-                    (d) => DropdownMenuItem(value: d, child: Text(d)),
-                  ),
-                ],
-                onChanged: (v) => setState(() => _selectedRegion = v),
-              ),
+              // Location section
+              _buildLocationSection(),
+
               const SizedBox(height: 16),
 
               // Description
@@ -388,6 +461,242 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
         ),
       ),
     ).animate().fadeIn(delay: 150.ms).slideY(begin: 0.05);
+  }
+
+  Widget _buildLocationSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Toggle: District / GPS
+        Row(
+          children: [
+            const Icon(
+              Icons.location_on_outlined,
+              color: AppColors.cyan,
+              size: 20,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Location (optional)',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
+            const Spacer(),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.bgDark.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: AppColors.cyan.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _locationToggleChip(
+                    label: 'District',
+                    icon: Icons.map_outlined,
+                    selected: !_useGps,
+                    onTap: () => setState(() {
+                      _useGps = false;
+                      _gpsError = null;
+                    }),
+                  ),
+                  _locationToggleChip(
+                    label: 'GPS',
+                    icon: Icons.gps_fixed,
+                    selected: _useGps,
+                    onTap: () => setState(() {
+                      _useGps = true;
+                      _gpsError = null;
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+
+        // District dropdown
+        if (!_useGps)
+          DropdownButtonFormField<String?>(
+            initialValue: _selectedRegion,
+            decoration: const InputDecoration(
+              labelText: 'Select district',
+              prefixIcon: Icon(
+                Icons.location_city_outlined,
+                color: AppColors.cyan,
+              ),
+              isDense: true,
+            ),
+            hint: const Text('None'),
+            items: [
+              const DropdownMenuItem<String?>(value: null, child: Text('None')),
+              ...ScamKeywords.sriLankanDistricts.keys.map(
+                (d) => DropdownMenuItem(value: d, child: Text(d)),
+              ),
+            ],
+            onChanged: (v) => setState(() => _selectedRegion = v),
+          )
+        else
+          // GPS picker
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              OutlinedButton.icon(
+                onPressed: _gettingLocation ? null : _getGpsLocation,
+                icon: _gettingLocation
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.cyan,
+                        ),
+                      )
+                    : const Icon(Icons.my_location, size: 18),
+                label: Text(
+                  _gettingLocation
+                      ? 'Getting location…'
+                      : _gpsLat != null
+                      ? 'Update Location'
+                      : 'Get My Location',
+                ),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.cyan,
+                  side: BorderSide(
+                    color: AppColors.cyan.withValues(alpha: 0.5),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              if (_gpsError != null) ...
+                [
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.errorRed.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: AppColors.errorRed.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Text(
+                      _gpsError!,
+                      style: const TextStyle(
+                        color: AppColors.errorRed,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              if (_gpsLat != null && _gpsLng != null) ...
+                [
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.cyan.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: AppColors.cyan.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.gps_fixed,
+                          color: AppColors.cyan,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (_gpsNearestDistrict != null)
+                                Text(
+                                  _gpsNearestDistrict!,
+                                  style: const TextStyle(
+                                    color: AppColors.cyan,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              Text(
+                                '${_gpsLat!.toStringAsFixed(5)}, ${_gpsLng!.toStringAsFixed(5)}',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(
+                          Icons.check_circle,
+                          color: AppColors.cyan,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _locationToggleChip({
+    required String label,
+    required IconData icon,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.cyan.withValues(alpha: 0.15) : Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 14,
+              color: selected ? AppColors.cyan : AppColors.textSecondary,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? AppColors.cyan : AppColors.textSecondary,
+                fontSize: 12,
+                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildSubmitButton(bool isDark) {
@@ -497,6 +806,11 @@ class _ReportNumberScreenState extends ConsumerState<ReportNumberScreen> {
                   _selectedScamType = ScamKeywords.scamTypes.first;
                   _selectedRegion = null;
                   _existingReport = null;
+                  _useGps = false;
+                  _gpsLat = null;
+                  _gpsLng = null;
+                  _gpsNearestDistrict = null;
+                  _gpsError = null;
                 });
               },
               icon: const Icon(Icons.add, size: 18),

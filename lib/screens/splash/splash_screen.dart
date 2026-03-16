@@ -74,37 +74,37 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   Widget _buildLogo() {
     return AnimatedBuilder(
-      animation: _pulseController,
-      builder: (_, anim) {
-        final p = _pulseController.value;
-        return Container(
-          width: 112,
-          height: 112,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.bgDark,
-            border: Border.all(
-              color: AppColors.cyan.withValues(alpha: 0.3 + p * 0.25),
-              width: 2,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.cyan.withValues(alpha: 0.15 + p * 0.2),
-                blurRadius: 30 + p * 20,
-                spreadRadius: 4 + p * 6,
+          animation: _pulseController,
+          builder: (_, anim) {
+            final p = _pulseController.value;
+            return Container(
+              width: 112,
+              height: 112,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.bgDark,
+                border: Border.all(
+                  color: AppColors.cyan.withValues(alpha: 0.3 + p * 0.25),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.cyan.withValues(alpha: 0.15 + p * 0.2),
+                    blurRadius: 30 + p * 20,
+                    spreadRadius: 4 + p * 6,
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Center(
-            child: Icon(
-              Icons.radar,
-              size: 54,
-              color: AppColors.cyan.withValues(alpha: 0.8 + p * 0.2),
-            ),
-          ),
-        );
-      },
-    )
+              child: Center(
+                child: Icon(
+                  Icons.radar,
+                  size: 54,
+                  color: AppColors.cyan.withValues(alpha: 0.8 + p * 0.2),
+                ),
+              ),
+            );
+          },
+        )
         .animate()
         .scale(
           begin: const Offset(0.5, 0.5),
@@ -116,14 +116,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   Widget _buildTitle() {
     return const Text(
-      'SCAM RADAR',
-      style: TextStyle(
-        color: AppColors.cyan,
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 6,
-      ),
-    )
+          'SCAM RADAR',
+          style: TextStyle(
+            color: AppColors.cyan,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 6,
+          ),
+        )
         .animate()
         .fadeIn(delay: 400.ms, duration: 600.ms)
         .slideY(begin: 0.2, delay: 400.ms);

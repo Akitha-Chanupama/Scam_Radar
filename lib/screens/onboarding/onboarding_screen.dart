@@ -41,8 +41,7 @@ const List<_OnboardPage> _pages = [
     icon: Icons.map_outlined,
     color: Color(0xFF00D97E),
     title: 'Threat Map',
-    subtitle:
-        'See where scams are happening across\nSri Lanka in real time.',
+    subtitle: 'See where scams are happening across\nSri Lanka in real time.',
   ),
   _OnboardPage(
     icon: Icons.lock_outlined,
@@ -157,7 +156,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     BoxShadow(
                       color: AppColors.cyan.withValues(alpha: 0.45),
                       blurRadius: 6,
-                    )
+                    ),
                   ]
                 : null,
           ),
@@ -226,25 +225,25 @@ class _PageContent extends StatelessWidget {
         children: [
           // Glowing icon
           Container(
-            width: 130,
-            height: 130,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: page.color.withValues(alpha: 0.08),
-              border: Border.all(
-                color: page.color.withValues(alpha: 0.3),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: page.color.withValues(alpha: 0.22),
-                  blurRadius: 45,
-                  spreadRadius: 10,
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: page.color.withValues(alpha: 0.08),
+                  border: Border.all(
+                    color: page.color.withValues(alpha: 0.3),
+                    width: 2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: page.color.withValues(alpha: 0.22),
+                      blurRadius: 45,
+                      spreadRadius: 10,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Icon(page.icon, size: 60, color: page.color),
-          )
+                child: Icon(page.icon, size: 60, color: page.color),
+              )
               .animate()
               .scale(
                 begin: const Offset(0.6, 0.6),
@@ -256,15 +255,15 @@ class _PageContent extends StatelessWidget {
           const SizedBox(height: 48),
 
           Text(
-            page.title,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.4,
-            ),
-            textAlign: TextAlign.center,
-          )
+                page.title,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.4,
+                ),
+                textAlign: TextAlign.center,
+              )
               .animate()
               .fadeIn(delay: 120.ms, duration: 500.ms)
               .slideY(begin: 0.1, delay: 120.ms),
@@ -279,9 +278,7 @@ class _PageContent extends StatelessWidget {
               height: 1.65,
             ),
             textAlign: TextAlign.center,
-          )
-              .animate()
-              .fadeIn(delay: 230.ms, duration: 500.ms),
+          ).animate().fadeIn(delay: 230.ms, duration: 500.ms),
         ],
       ),
     );

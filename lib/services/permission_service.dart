@@ -27,4 +27,13 @@ class PermissionService {
     final status = await Permission.photos.request();
     return status.isGranted;
   }
+
+  static Future<bool> hasLocationPermission() async {
+    return (await Permission.location.status).isGranted;
+  }
+
+  static Future<bool> requestLocation() async {
+    final status = await Permission.location.request();
+    return status.isGranted;
+  }
 }

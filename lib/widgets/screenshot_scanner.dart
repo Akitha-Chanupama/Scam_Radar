@@ -48,7 +48,8 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
         case OcrPickResult.noText:
           setState(() {
             _processing = false;
-            _error = 'No text detected in the image.\nTry a clearer screenshot.';
+            _error =
+                'No text detected in the image.\nTry a clearer screenshot.';
           });
 
         case OcrPickResult.success:
@@ -177,4 +178,3 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
     );
   }
 }
-
