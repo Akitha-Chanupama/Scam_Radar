@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -8,6 +9,7 @@ import '../../config/theme.dart';
 import '../../providers/scam_messages_provider.dart';
 import '../../providers/community_feed_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../services/share_intent_service.dart';
 import '../../utils/validators.dart';
 import '../../widgets/particle_background.dart';
 import '../../widgets/scam_card.dart';
@@ -25,6 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
   final _messageController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late AnimationController _pulseController;
+  StreamSubscription<String>? _shareSub;
 
   @override
   void initState() {
@@ -33,12 +36,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
+
+    // Handle share intents from other apps.
+    _initShareIntent();
+  }
+
+  Future<void> _initShareIntent() async {
+    // App opened fresh via share intent.
+    final initial = await ShareIntentService.instance.getInitialSharedText();
+    if (initial != null && initial.isNotEmpty && mounted) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _handleSharedText(initial),
+      );
+    }
+    // App already running, new share arrives.
+    _shareSub = ShareIntentService.instance.sharedTextStream.listen((text) {
+      if (mounted) _handleSharedText(text);
+    });
+  }
+
+  /// Pre-fills the text field and immediately runs analysis.
+  void _handleSharedText(String text) {
+    _messageController.text = text;
+    // Small delay so the widget tree is fully settled before navigating.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _analyzeMessage();
+    });
   }
 
   @override
   void dispose() {
     _messageController.dispose();
     _pulseController.dispose();
+    _shareSub?.cancel();
     super.dispose();
   }
 
