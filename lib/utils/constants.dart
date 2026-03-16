@@ -70,19 +70,6 @@ class ScamKeywords {
   ];
 
   static const List<String> sriLankaSpecific = [
-    'dialog',
-    'mobitel',
-    'hutch',
-    'airtel lanka',
-    'sri lanka telecom',
-    'slt',
-    'bank of ceylon',
-    'peoples bank',
-    'commercial bank',
-    'sampath bank',
-    'hatton national',
-    'hnb',
-    'nsb',
     'nation builders',
     'rupees',
     'lkr',
@@ -98,13 +85,13 @@ class ScamKeywords {
   /// Commonly used in Sri Lankan SMS instant-loan scams.
   static const List<String> singlishLoanScam = [
     // Core money / loan words
-    'mudal',       // money / loan
-    'nayak',       // a loan
-    'naya mudal',  // loan money
+    'mudal', // money / loan
+    'nayak', // a loan
+    'naya mudal', // loan money
     'palamu naya', // first loan
     // Urgency
-    'hadisi',      // fast / quick
-    'hadissiya',   // urgency
+    'hadisi', // fast / quick
+    'hadissiya', // urgency
     'sathi anthayata', // urgently
     // "Do you need"
     'avashyada',
@@ -117,17 +104,17 @@ class ScamKeywords {
     'labaaganna',
     'labaganna',
     'labagena',
-    'dimanawa',    // will give
+    'dimanawa', // will give
     // Loan action phrases
     'thora ganna', // take a loan
-    'dakwa',       // up to (amount)
+    'dakwa', // up to (amount)
     'ayadum karanna', // apply now
-    'ayadum',      // apply
-    'wattamak',    // percentage / approval rate
-    'miniththu',   // minutes
-    'mehidi',      // here / from here
-    'araganna',    // to take
-    'danma',       // right now
+    'ayadum', // apply
+    'wattamak', // percentage / approval rate
+    'miniththu', // minutes
+    'mehidi', // here / from here
+    'araganna', // to take
+    'danma', // right now
   ];
 
   /// Regex pattern to detect URLs in text.
