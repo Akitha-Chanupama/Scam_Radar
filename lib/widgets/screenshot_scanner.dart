@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 import '../services/ocr_service.dart';
 
 class ScreenshotScanner extends StatefulWidget {
@@ -15,31 +17,46 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
   bool _processing = false;
   String? _extractedText;
   String? _error;
+  bool _permissionDenied = false;
 
   Future<void> _scan({required bool fromCamera}) async {
     setState(() {
       _processing = true;
       _error = null;
       _extractedText = null;
+      _permissionDenied = false;
     });
 
     try {
-      final text = fromCamera
+      final result = fromCamera
           ? await _ocr.pickAndScanFromCamera()
           : await _ocr.pickAndScanFromGallery();
 
-      if (text == null) {
-        setState(() {
-          _processing = false;
-          _error = 'No text detected in the image.';
-        });
-        return;
-      }
+      switch (result.result) {
+        case OcrPickResult.cancelled:
+          setState(() {
+            _processing = false;
+            if (result.permissionDenied) {
+              _permissionDenied = true;
+              _error = fromCamera
+                  ? 'Camera permission is required to scan screenshots.'
+                  : 'Gallery permission is required to pick an image.';
+            }
+            // If not permission denied → user simply cancelled. Reset quietly.
+          });
 
-      setState(() {
-        _processing = false;
-        _extractedText = text;
-      });
+        case OcrPickResult.noText:
+          setState(() {
+            _processing = false;
+            _error = 'No text detected in the image.\nTry a clearer screenshot.';
+          });
+
+        case OcrPickResult.success:
+          setState(() {
+            _processing = false;
+            _extractedText = result.text;
+          });
+      }
     } catch (e) {
       setState(() {
         _processing = false;
@@ -118,6 +135,14 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
                   ),
                 ),
               ),
+              if (_permissionDenied) ...[
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () => openAppSettings(),
+                  icon: const Icon(Icons.settings_outlined, size: 18),
+                  label: const Text('Open App Settings'),
+                ),
+              ],
               const SizedBox(height: 16),
             ],
             Row(
@@ -152,3 +177,4 @@ class _ScreenshotScannerState extends State<ScreenshotScanner> {
     );
   }
 }
+

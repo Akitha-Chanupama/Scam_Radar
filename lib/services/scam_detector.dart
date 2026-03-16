@@ -35,19 +35,22 @@ class ScamDetector {
     }
 
     // -- 3. Prize / lottery scam patterns -------------------------------------
-    final hasCongrats = lowerText.contains('congratulations') ||
-        lowerText.contains('congrats');
-    final hasWon = lowerText.contains(' won ') ||
+    final hasCongrats =
+        lowerText.contains('congratulations') || lowerText.contains('congrats');
+    final hasWon =
+        lowerText.contains(' won ') ||
         lowerText.contains('you have won') ||
         lowerText.contains("you've won") ||
         lowerText.contains('won a prize') ||
         lowerText.contains('won the lottery');
-    final hasSelected = lowerText.contains('lucky winner') ||
+    final hasSelected =
+        lowerText.contains('lucky winner') ||
         lowerText.contains('lucky draw') ||
         lowerText.contains('selected as winner') ||
         lowerText.contains('you have been selected') ||
         lowerText.contains("you've been selected");
-    final hasHumanitarian = lowerText.contains('humanitarian aid') ||
+    final hasHumanitarian =
+        lowerText.contains('humanitarian aid') ||
         lowerText.contains('relief fund') ||
         lowerText.contains('charity grant');
 
@@ -123,8 +126,7 @@ class ScamDetector {
     final hasPersonalDataRequest = personalDataMatches > 0;
 
     // -- 8. Suspicious URLs (15) -----------------------------------------------
-    final urlMatches =
-        ScamKeywords.suspiciousUrlPattern.allMatches(lowerText);
+    final urlMatches = ScamKeywords.suspiciousUrlPattern.allMatches(lowerText);
     if (urlMatches.isNotEmpty) {
       rawScore += 15;
       reasons.add('Suspicious link(s) detected (${urlMatches.length} found)');
@@ -142,16 +144,22 @@ class ScamDetector {
     if (ScamKeywords.unsolicitedSmsPattern.hasMatch(lowerText)) {
       rawScore += 18;
       reasons.add(
-          'Unsolicited advertisement — contains SMS opt-out instruction (SMS STOP / StopAd)');
+        'Unsolicited advertisement — contains SMS opt-out instruction (SMS STOP / StopAd)',
+      );
     }
 
     // -- 8c. Promotional code in message (12) -----------------------------------
     if (lowerText.contains('promo code') ||
         lowerText.contains('promocode') ||
         lowerText.contains('promo:') ||
-        RegExp(r'\bpromo\s+code\s*:', caseSensitive: false).hasMatch(lowerText)) {
+        RegExp(
+          r'\bpromo\s+code\s*:',
+          caseSensitive: false,
+        ).hasMatch(lowerText)) {
       rawScore += 12;
-      reasons.add('Contains promotional code — common in loan scam advertisements');
+      reasons.add(
+        'Contains promotional code — common in loan scam advertisements',
+      );
     }
 
     // -- 9. Email address detection --------------------------------------------
@@ -160,12 +168,14 @@ class ScamDetector {
     if (emailMatches.isNotEmpty) {
       hasContactEmail = true;
       final emailStr = emailMatches.first.group(0) ?? '';
-      final isFreeEmail =
-          ScamKeywords.freeEmailDomains.any((d) => emailStr.contains(d));
+      final isFreeEmail = ScamKeywords.freeEmailDomains.any(
+        (d) => emailStr.contains(d),
+      );
       if (isFreeEmail) {
         rawScore += 22;
         reasons.add(
-            'Free personal email used as official contact ($emailStr) - classic scam');
+          'Free personal email used as official contact ($emailStr) - classic scam',
+        );
       } else {
         rawScore += 10;
         reasons.add('Contains contact email address: $emailStr');
@@ -173,14 +183,14 @@ class ScamDetector {
     }
 
     // -- 10. Large monetary amount with currency -------------------------------
-    final amountMatches =
-        ScamKeywords.largeAmountPattern.allMatches(lowerText);
+    final amountMatches = ScamKeywords.largeAmountPattern.allMatches(lowerText);
     var hasLargeAmount = false;
     if (amountMatches.isNotEmpty) {
       hasLargeAmount = true;
       rawScore += 20;
       reasons.add(
-          'Large monetary amount promised (${amountMatches.first.group(0)?.trim()})');
+        'Large monetary amount promised (${amountMatches.first.group(0)?.trim()})',
+      );
     }
     // Also catch Sri Lankan Rs. prefix format (e.g. Rs. 80 000, Rs.120,000)
     if (!hasLargeAmount &&
@@ -252,22 +262,27 @@ class ScamDetector {
         (hasContactEmail || urlMatches.isNotEmpty)) {
       rawScore += 35;
       reasons.add(
-          'HIGH RISK: Advance-fee fraud - fake organization + large reward + contact request');
+        'HIGH RISK: Advance-fee fraud - fake organization + large reward + contact request',
+      );
     }
     if ((hasCongrats || hasWon) && hasPersonalDataRequest) {
       rawScore += 25;
-      reasons.add('HIGH RISK: Prize claim combined with personal data harvesting');
+      reasons.add(
+        'HIGH RISK: Prize claim combined with personal data harvesting',
+      );
     }
     if (hasOrgImpersonation && hasPersonalDataRequest) {
       rawScore += 20;
       reasons.add(
-          'HIGH RISK: Official authority impersonation requesting personal details');
+        'HIGH RISK: Official authority impersonation requesting personal details',
+      );
     }
     // Singlish loan keywords + shortened URL = instant-loan scam ad
     if (hasSinglishLoanKeyword && urlMatches.isNotEmpty) {
       rawScore += 30;
       reasons.add(
-          'HIGH RISK: Singlish loan scam — local-language loan promise with suspicious link');
+        'HIGH RISK: Singlish loan scam — local-language loan promise with suspicious link',
+      );
     }
 
     // -- Normalize -------------------------------------------------------------
