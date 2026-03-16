@@ -40,6 +40,15 @@ class ScamKeywords {
     'make money fast',
     'financial freedom',
     'inheritance',
+    'won',
+    'winning',
+    'winnings',
+    'pound',
+    'pounds',
+    'award',
+    'grant',
+    'reward',
+    'bonus',
   ];
 
   static const List<String> phishing = [
@@ -85,6 +94,42 @@ class ScamKeywords {
     'samurdhi',
   ];
 
+  /// Singlish (romanized Sinhala) loan and financial scam keywords.
+  /// Commonly used in Sri Lankan SMS instant-loan scams.
+  static const List<String> singlishLoanScam = [
+    // Core money / loan words
+    'mudal',       // money / loan
+    'nayak',       // a loan
+    'naya mudal',  // loan money
+    'palamu naya', // first loan
+    // Urgency
+    'hadisi',      // fast / quick
+    'hadissiya',   // urgency
+    'sathi anthayata', // urgently
+    // "Do you need"
+    'avashyada',
+    'awashyada',
+    'avashya',
+    'awashya',
+    // Promise to give
+    'labadayi',
+    'labhadayi',
+    'labaaganna',
+    'labaganna',
+    'labagena',
+    'dimanawa',    // will give
+    // Loan action phrases
+    'thora ganna', // take a loan
+    'dakwa',       // up to (amount)
+    'ayadum karanna', // apply now
+    'ayadum',      // apply
+    'wattamak',    // percentage / approval rate
+    'miniththu',   // minutes
+    'mehidi',      // here / from here
+    'araganna',    // to take
+    'danma',       // right now
+  ];
+
   /// Regex pattern to detect URLs in text.
   static final RegExp suspiciousUrlPattern = RegExp(
     r'https?://[^\s<>"{}|\\^`\[\]]+|www\.[^\s<>"{}|\\^`\[\]]+',
@@ -103,10 +148,142 @@ class ScamKeywords {
     'rebrand.ly',
     'cutt.ly',
     'short.io',
+    'rb.gy',
+    'bitly.cx',
+    'tiny.cc',
+    'clck.ru',
+    'shorturl.at',
   ];
 
   /// Pattern to detect phone numbers (Sri Lankan and international).
   static final RegExp phonePattern = RegExp(r'(\+?94|0)\d{9,10}|\+?\d{10,15}');
+
+  /// Regex to detect email addresses.
+  static final RegExp emailPattern = RegExp(
+    r'\b[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\b',
+  );
+
+  /// Free email service domains commonly misused in scams.
+  static const List<String> freeEmailDomains = [
+    '@gmail.com',
+    '@yahoo.com',
+    '@hotmail.com',
+    '@outlook.com',
+    '@live.com',
+    '@aol.com',
+    '@mail.com',
+    '@icloud.com',
+    '@ymail.com',
+    '@protonmail.com',
+    '@zohomail.com',
+  ];
+
+  /// Regex to detect large monetary amounts with optional currency adjective
+  /// (e.g. "875,000 BRITISH POUND" or "50,000 dollars").
+  static final RegExp largeAmountPattern = RegExp(
+    r'\b\d[\d,\.]+\s*(?:\w+\s+)?(pounds?|dollars?|euros?|usd|gbp|eur|lkr|rupees?|rand)\b',
+    caseSensitive: false,
+  );
+
+  /// Regex to detect Sri Lankan rupee amounts in the local Rs. prefix format:
+  /// e.g. "Rs. 80 000", "Rs.120,000", "Rs 50000".
+  static final RegExp sriLankanAmountPattern = RegExp(
+    r'\brs\.?\s*\d[\d,\.\s]*\d\b',
+    caseSensitive: false,
+  );
+
+  /// Regex to detect unsolicited advertisement opt-out patterns.
+  /// "*SMS STOP", "StopAd", "SMS NO" are mandatory in Sri Lankan bulk SMS
+  /// marketing — their presence signals an unsolicited promotional message.
+  static final RegExp unsolicitedSmsPattern = RegExp(
+    r'\*?\s*sms\s+stop\b|\*?\s*stopads?\b|\*?\s*stop\s*ad\b|sms\s+no\s+\w+',
+    caseSensitive: false,
+  );
+
+  /// Regex to detect comma/semicolon-separated personal info field requests
+  /// (e.g. "NAME,AGE,ADDRESS").
+  static final RegExp personalFieldsPattern = RegExp(
+    r'\b(name|age|address|occupation|phone|nationality)\s*[,;]'
+    r'|[,;]\s*(name|age|address|occupation|phone|nationality)\b',
+    caseSensitive: false,
+  );
+
+  /// Prize / lottery notification fraud keywords.
+  static const List<String> prizeScam = [
+    'you have won',
+    "you've won",
+    'you won',
+    'won a prize',
+    'won the lottery',
+    'selected as winner',
+    'lucky winner',
+    'lucky draw',
+    'prize winner',
+    'claim your prize',
+    'claim your reward',
+    'congratulations',
+    'congrats',
+    'you have been selected',
+    "you've been selected",
+    'humanitarian aid',
+    'relief fund',
+    'charity grant',
+    'unclaimed prize',
+    'unclaimed funds',
+    'prize money',
+    'cash prize',
+    'entitled to',
+  ];
+
+  /// Official organization / authority impersonation indicators.
+  static const List<String> orgImpersonation = [
+    'united nations',
+    'un humanitarian',
+    'world bank',
+    'world health organization',
+    'interpol',
+    'fbi',
+    'cia',
+    'mi6',
+    'scotland yard',
+    'government of',
+    'ministry of finance',
+    'central bank',
+    'international monetary fund',
+    'imf',
+    'royal family',
+    'british government',
+    'federal reserve',
+    'bank of england',
+    'microsoft lottery',
+    'google lottery',
+    'facebook lottery',
+    'whatsapp lottery',
+    'youtube lottery',
+  ];
+
+  /// Personal data harvesting request patterns.
+  static const List<String> personalDataRequest = [
+    'your full name',
+    'your name',
+    'your age',
+    'your address',
+    'your occupation',
+    'your nationality',
+    'your date of birth',
+    'your d.o.b',
+    'send us your',
+    'email us your',
+    'provide your',
+    'send your details',
+    'your details to',
+    'your information to',
+    'contact us with your',
+    'send the following',
+    'reply with your',
+    'fill in your',
+    'submit your',
+  ];
 
   /// Scam type categories for reporting.
   static const List<String> scamTypes = [

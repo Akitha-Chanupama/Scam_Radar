@@ -4,6 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/auth/signup_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/splash/splash_screen.dart';
+import '../screens/onboarding/onboarding_screen.dart';
 import '../screens/analysis/message_analysis_screen.dart';
 import '../screens/report/report_number_screen.dart';
 import '../screens/feed/community_feed_screen.dart';
@@ -16,18 +18,23 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/home',
+  initialLocation: '/splash',
   redirect: (context, state) {
+    final loc = state.matchedLocation;
+    // Never redirect away from splash or onboarding
+    if (loc == '/splash' || loc == '/onboarding') return null;
+
     final session = Supabase.instance.client.auth.currentSession;
     final isAuth = session != null;
-    final isAuthRoute =
-        state.matchedLocation == '/login' || state.matchedLocation == '/signup';
+    final isAuthRoute = loc == '/login' || loc == '/signup';
 
     if (!isAuth && !isAuthRoute) return '/login';
     if (isAuth && isAuthRoute) return '/home';
     return null;
   },
   routes: [
+    GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
+    GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingScreen()),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(path: '/signup', builder: (context, state) => const SignupScreen()),
     ShellRoute(
