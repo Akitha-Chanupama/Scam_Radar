@@ -4,7 +4,7 @@
 
 Scam Radar is a collaborative community-driven mobile application built with Flutter and Supabase. It helps users identify suspicious scam messages using AI-powered analysis, report fraudulent phone numbers, and stay informed about emerging scam trends through a live community feed.
 
----
+---hh
 
 ## ✨ Features
 
